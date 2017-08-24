@@ -1,5 +1,4 @@
 - Must compile with c++11 or better.
-- Expected file is as described in the assignment spec.
 - Must set data_max and data_min constants at top of code
 - Number of iterations can be set as desired although 
   for image compression it gets very slow quickly especially
