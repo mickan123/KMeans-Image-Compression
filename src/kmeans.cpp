@@ -8,8 +8,6 @@
 #include <iomanip> //Setprecision for printing results
 #include <climits>
 
-#define NUM_ITERATIONS 100 //Number of random iterations to perform
-
 using namespace std;
 
 /********************* NOTES *************************
