@@ -15,8 +15,8 @@ using namespace std;
 - If 2 coords are same distance from cluster it will 
   be classified to the lower valued cluster.
 
-- Cluster initialization is random within defined
-  data range
+- Cluster initialization is random within max and min
+  values of data
 
 *****************************************************/
 
@@ -143,6 +143,24 @@ void compressImage	(vector<vector<double>> &data,
 	}
 }
 
+//Generate random initial coordinates for clusters in data range
+vector<vector<double>> initializeClusters(vector<vector<double>> data, int numClusters, int data_max, int data_min)
+{
+	vector<vector<double>> clusterCoordinates;
+	for (int j=0; j<numClusters; j++)
+	{
+		vector<double> coords;
+		for (int w=0; w<data[0].size()-1; w++) //Generalize to n dimensional data
+		{
+			double rand_num = (double)rand() / RAND_MAX;
+			rand_num = rand_num * (data_max - data_max);
+			coords.push_back(rand_num);
+		}
+		clusterCoordinates.push_back(coords);
+	}
+	return clusterCoordinates;
+}
+
 //Runs kmeans clustering on data vector, if ppm outputs compressed file
 void kmeans	(vector<vector<double>> &data, 
 			int numClusters, 
@@ -162,30 +180,16 @@ void kmeans	(vector<vector<double>> &data,
 			if (data[i][j] < data_min) data_min = data[i][j];
 		}
 	}
-		std::cout << data_max << std::endl;
 
 	vector<vector<double>> bestClusterCoordinates; //Holds best fit of clusters 
 	double bestDistance; //Used to calculate if new best set of coordinates
 	for (int i=0; i<num_iterations; i++) //Run several random iterations
 	{
-		//Generate random initial coordinates for cluster
-		vector<vector<double>> clusterCoordinates; 
-		for (int j=0; j<numClusters; j++)
-		{
-			vector<double> coords;
-			for (int w=0; w<data[0].size()-1; w++) //Generalize to n dimensional data
-			{
-				double rand_num = (double)rand() / RAND_MAX;
-				rand_num = rand_num * (data_max - data_max);
-				coords.push_back(rand_num);
-			}
-			clusterCoordinates.push_back(coords);
-		}
-		int count = 0;
+		vector<vector<double>> clusterCoordinates = initializeClusters(data, numClusters, data_max, data_min); 
+		
 		//Keep reclassifying data and updating clusters until convergence
 		do 
 		{
-			count++;
 			classifyData(data, clusterCoordinates);
 		} while (!updateClusterLoc(data, clusterCoordinates));
 		
